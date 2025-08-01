@@ -2,13 +2,13 @@
 
 CREATE TABLE IF NOT EXISTS Users (
   id_Users INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(60),
+  nome VARCHAR(100),
   senha VARCHAR(255) 
 );
 
 CREATE TABLE IF NOT EXISTS Student (
   id_Student INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(60),
+  nome VARCHAR(100),
   user_id INT,
   FOREIGN KEY (user_id) REFERENCES Users(id_Users)
 );
