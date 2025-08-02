@@ -1,10 +1,11 @@
 import express from "express";
-import verify from "./jwt";
-import db from "../db";
+import verify from "./jwt.js";
+import db from "../db.js";
 import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken'
 
 const routerLogin = express.Router();
-const secret = "SuperSecretoOCodigo";
+const secret = "SuperSecreto";
 
 routerLogin.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -34,3 +35,5 @@ routerLogin.post("/login", async (req, res) => {
 routerLogin.get("/verify", verify(), async (req, res) => {
   res.status(200).json({ valid: true, userId: req.userId, username: req.nome });
 });
+
+export default routerLogin
