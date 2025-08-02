@@ -1,23 +1,23 @@
- create database IF NOT EXISTS database_Call_List;
+ create database IF NOT EXISTS Call_List;
 
 CREATE TABLE IF NOT EXISTS Users (
-  id_Users INT PRIMARY KEY AUTO_INCREMENT,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   nome VARCHAR(100),
   senha VARCHAR(255) 
 );
 
 CREATE TABLE IF NOT EXISTS Student (
-  id_Student INT PRIMARY KEY AUTO_INCREMENT,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   nome VARCHAR(100),
-  user_id INT,
-  FOREIGN KEY (user_id) REFERENCES Users(id_Users)
+  id_user INT,
+  FOREIGN KEY (user_id) REFERENCES Users(id)
 );
 
 CREATE TABLE IF NOT EXISTS Attendance (
-  id_Attendance INT PRIMARY KEY AUTO_INCREMENT,
-  student_id INT,
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  id_student INT,
   present BOOLEAN,
   date_attendance DATE,
-  FOREIGN KEY (student_id) REFERENCES Student(id_Student)
+  FOREIGN KEY (id_student) REFERENCES Student(id)
 );
 
