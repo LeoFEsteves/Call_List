@@ -1,9 +1,9 @@
 import * as SecureStore from "expo-secure-store";
 import {
-    createContext,
-    useContext,
-    useEffect,
-    useState
+  createContext,
+  useContext,
+  useEffect,
+  useState
 } from "react";
 
 type UserType = {
@@ -27,8 +27,8 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   user: null,
   token: null,
-  login: async () => {},
-  logout: async () => {},
+  login: async () => { },
+  logout: async () => { },
   error: null,
 });
 
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           //Aqui fazer checagem com backend
           setToken(token);
           setLogged(true);
-          setUser({ nome: "mock@email.com", senha: "passwordMock" });
+          //setUser({ nome: "nome", senha: "senha" });
         }
       } catch (error) {
         console.log(error);
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(true);
       setToken("token");
       await SecureStore.setItemAsync("token", "token");
-      setUser({ nome: "nome", senha: "senha" });
+      setUser({ nome: nome, senha: senha });
       setLogged(true);
     } catch (error: any) {
       console.error("Erro ao fazer Login!", error);

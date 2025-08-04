@@ -1,6 +1,16 @@
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
+import { useAuth } from '@/context/authContext';
+import { useEffect } from 'react';
 
 export default function TabsLayout() {
+    const {isLogged,isLoading} = useAuth()
+    const router = useRouter()
+
+    useEffect(()=>{
+        if(!isLoading&&!isLogged){
+            router.replace("/login")
+        }
+    },[isLoading,isLogged])
     return (
         <Tabs 
         screenOptions={{
