@@ -1,7 +1,7 @@
 import express from "express";
 import routerLogin from "./routes/login.js";
 import routerCreateUser from "./routes/createUser.js";
-import routerStudents from "./routes/students.js";
+import routerStudents from "./routes/student.js";
 import routerAttendance from "./routes/attendance.js";
 
 const app = express();
@@ -13,7 +13,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/auth", routerLogin, routerCreateUser);
-app.use("/students", routerStudents);
+app.use(routerStudents);
 app.use("/attendance", routerAttendance);
 
 const port = 5000;
