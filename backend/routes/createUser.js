@@ -13,7 +13,7 @@ routerCreateUser.post("/create/user", async (req, res) => {
   }
 
   try {
-    const [users] = await db.query("SELECT nome FROM users WHERE nome = ?", [
+    const [users] = await db.query("SELECT nome FROM Users WHERE nome = ?", [
       nome,
     ]);
 
@@ -23,7 +23,7 @@ routerCreateUser.post("/create/user", async (req, res) => {
     const hash = await bcrypt.hash(senha, salt);
 
     const [result] = await db.query(
-      "INSERT INTO users (nome,senha) VALUES (?,?)",
+      "INSERT INTO Users (nome,senha) VALUES (?,?)",
       [nome, hash]
     );
     res.status(201).json({ nome, id: result.insertId });

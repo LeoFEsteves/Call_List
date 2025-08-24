@@ -46,15 +46,6 @@ export default function Login() {
         />
       </View>
       <Text>Login Screen </Text>
-      <TouchableNativeFeedback
-        onPress={() => {
-          useRouter().push("/(tabs)/attendance");
-        }}
-      >
-        <View>
-          <Text>ir para home sem autenticar </Text>
-        </View>
-      </TouchableNativeFeedback>
     </View>
   );
 }
