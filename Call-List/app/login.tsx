@@ -45,7 +45,8 @@ export default function Login() {
           disabled={isLoading}
         />
       </View>
-      <Text>Login Screen </Text>
+      <Text>Não tem uma conta?</Text>
+      <Text> Cadastra-se</Text>
     </View>
   );
 }

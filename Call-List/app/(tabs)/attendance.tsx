@@ -15,8 +15,7 @@ export default function Attendance() {
         right: 1,
         bottom: 1,
       }}>
-      <Text style={{ fontWeight: "normal" }}>{user?.nome}, {user?.senha}</Text>
-      <Button title="Logout" onPress={logout} />
+
     </View>
   )
 }
