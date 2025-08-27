@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
         const token = await SecureStore.getItemAsync("token");
         if (token && connection) {
-          fetch("http://192.168.15.8:5000/auth/verify")
+          fetch("http://192.168.15.4:5000/auth/verify")
             .then((response) => response.json())
             .then((data) => console.log(data));
           setLogged(true);
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(true);
         const body = JSON.stringify({ nome, senha });
 
-        fetch("http://192.168.15.8:5000/auth/login", {
+        fetch("http://192.168.15.4:5000/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

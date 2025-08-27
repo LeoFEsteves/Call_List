@@ -1,52 +1,72 @@
 import { useAuth } from "@/context/authContext";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Button, Text, TextInput, TouchableNativeFeedback, View } from "react-native";
-
+import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Login() {
-  const { login, isLoading, error } = useAuth()
-  const [nome, setNome] = useState("")
-  const [password, setPassword] = useState("")
+  const { login, isLoading, error } = useAuth();
+  const [nome, setNome] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleLogin = async () => {
-    await login(nome, password)
-  }
+    await login(nome, password);
+  };
+
+  const handleNavigateRegister = () => {
+    router.push("/register"); 
+  };
 
   return (
     <View
       style={{
-        display: "flex",
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        position: "absolute",
-        top: 1,
-        left: 1,
-        right: 1,
-        bottom: 1,
+        padding: 16,
       }}
     >
-      <View>
-        {error && (
-          <Text style={{ color: "red" }}>
-            {error}
-          </Text>
-        )}
-        <TextInput placeholder="Nome" value={nome} onChangeText={setNome} />
+      <View style={{ width: "100%", marginBottom: 16 }}>
+        {error && <Text style={{ color: "red", marginBottom: 8 }}>{error}</Text>}
+
         <TextInput
-          placeholder="Password"
+          placeholder="Nome"
+          value={nome}
+          onChangeText={setNome}
+          style={{
+            borderWidth: 1,
+            borderColor: "#aaa",
+            padding: 8,
+            borderRadius: 8,
+            marginBottom: 8,
+          }}
+        />
+
+        <TextInput
+          placeholder="Senha"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
+          style={{
+            borderWidth: 1,
+            borderColor: "#aaa",
+            padding: 8,
+            borderRadius: 8,
+            marginBottom: 16,
+          }}
         />
+
         <Button
           title={isLoading ? "Loading..." : "Login"}
           onPress={handleLogin}
           disabled={isLoading}
         />
       </View>
+
       <Text>Não tem uma conta?</Text>
-      <Text> Cadastra-se</Text>
+      <TouchableOpacity onPress={handleNavigateRegister}>
+        <Text style={{ color: "blue", marginTop: 4 }}>Cadastrar-se</Text>
+      </TouchableOpacity>
     </View>
   );
 }
