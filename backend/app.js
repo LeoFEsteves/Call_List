@@ -13,7 +13,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/auth", routerLogin, routerCreateUser);
-app.use(routerStudents);
+app.use("/students", routerStudents);
 app.use("/attendance", routerAttendance);
 
 const port = 5000;

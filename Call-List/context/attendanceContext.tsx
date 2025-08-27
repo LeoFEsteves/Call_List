@@ -17,11 +17,9 @@ type Student = {
 type AttendanceContextType = {
   isLoading: boolean;
   error: string | null;
-
   students: Student[];
   fetchStudents: () => Promise<void>;
   addStudent: (name: string) => Promise<void>;
-
   markAttendance: (attendance: AttendanceType) => Promise<void>;
 };
 
@@ -43,12 +41,28 @@ export const AttendanceProvider = ({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setConnection(state.isConnected);
+      console.log("Conexão de rede:", state.isConnected);
     });
+
     return () => unsubscribe();
   }, []);
 
+  const getToken = async (): Promise<string | null> => {
+    try {
+      const token = await SecureStore.getItemAsync("token");
+      console.log("Token recuperado do SecureStore:", token ? "SIM" : "NÃO");
+      return token;
+    } catch (error) {
+      console.error("Erro ao buscar token:", error);
+      return null;
+    }
+  };
+
   const fetchStudents = async () => {
+    console.log("fetchStudents chamado");
+    
     if (!connection) {
+      console.log("Sem conexão de rede");
       setError("Sem conexão de rede!");
       return;
     }
@@ -56,27 +70,35 @@ export const AttendanceProvider = ({ children }: { children: React.ReactNode }) 
     try {
       setLoading(true);
       setError(null);
-
-      const token = await SecureStore.getItemAsync("token");
+      
+      const token = await getToken();
+      console.log("Token para fetchStudents:", token ? "VÁLIDO" : "INVÁLIDO");
+      
       if (!token) {
         setError("Usuário não autenticado");
         return;
       }
 
+      console.log("Fazendo requisição para /students");
       const response = await fetch("http://192.168.15.4:5000/students", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      const data = await response.json();
-
+      console.log("Resposta recebida - Status:", response.status);
+      
       if (!response.ok) {
-        setError(data?.message || "Erro ao buscar alunos");
+        const errorData = await response.json();
+        console.log("Erro na resposta:", errorData);
+        setError(errorData?.message || "Erro ao buscar alunos");
         return;
       }
 
+      const data = await response.json();
+      console.log("Alunos recebidos:", data.length);
       setStudents(data);
+
     } catch (err: any) {
       console.error("Erro ao buscar alunos:", err);
       setError("Erro de conexão");
@@ -86,7 +108,8 @@ export const AttendanceProvider = ({ children }: { children: React.ReactNode }) 
   };
 
   const addStudent = async (name: string) => {
-    console.log("Chamando addStudent com:", name); //Se quiser pode comentar, botei só pra testar porque estava dando bug
+    console.log("addStudent chamado com nome:", name);
+    
     if (!name.trim()) {
       Alert.alert("Erro", "Nome do aluno não pode ser vazio.");
       return;
@@ -100,14 +123,17 @@ export const AttendanceProvider = ({ children }: { children: React.ReactNode }) 
     try {
       setLoading(true);
       setError(null);
-
-      const token = await SecureStore.getItemAsync("token");
+      
+      const token = await getToken();
+      console.log("Token para addStudent:", token ? "VÁLIDO" : "INVÁLIDO");
+      
       if (!token) {
         setError("Usuário não autenticado");
         Alert.alert("Erro", "Você precisa estar logado.");
         return;
       }
 
+      console.log("Fazendo POST para /students");
       const response = await fetch("http://192.168.15.4:5000/students", {
         method: "POST",
         headers: {
@@ -117,15 +143,20 @@ export const AttendanceProvider = ({ children }: { children: React.ReactNode }) 
         body: JSON.stringify({ name }),
       });
 
+      console.log("Resposta do POST - Status:", response.status);
+      
       const data = await response.json();
+      console.log("Dados da resposta:", data);
 
       if (!response.ok) {
         setError(data?.message || "Erro ao adicionar aluno");
         Alert.alert("Erro", data?.message || "Erro ao adicionar aluno");
-      } else {
-        Alert.alert("Sucesso", "Aluno adicionado com sucesso!");
-        fetchStudents(); 
+        return;
       }
+
+      setStudents((prev) => [...prev, { id: data.id, name: data.name }]);
+      Alert.alert("Sucesso", "Aluno adicionado com sucesso!");
+
     } catch (err: any) {
       console.error("Erro ao adicionar aluno:", err);
       setError("Erro de conexão");
@@ -135,8 +166,9 @@ export const AttendanceProvider = ({ children }: { children: React.ReactNode }) 
     }
   };
 
-
   const markAttendance = async ({ studentName, present, date_attendance }: AttendanceType) => {
+    console.log("markAttendance chamado:", { studentName, present, date_attendance });
+    
     if (!studentName || date_attendance.trim() === "") {
       setError("Dados incompletos");
       Alert.alert("Erro", "Informe aluno e data.");
@@ -152,14 +184,17 @@ export const AttendanceProvider = ({ children }: { children: React.ReactNode }) 
     try {
       setLoading(true);
       setError(null);
-
-      const token = await SecureStore.getItemAsync("token");
+      
+      const token = await getToken();
+      console.log("Token para markAttendance:", token ? "VÁLIDO" : "INVÁLIDO");
+      
       if (!token) {
         setError("Usuário não autenticado");
         Alert.alert("Erro", "Você precisa estar logado.");
         return;
       }
 
+      console.log("Fazendo POST para /attendance");
       const response = await fetch("http://192.168.15.4:5000/attendance", {
         method: "POST",
         headers: {
@@ -169,7 +204,10 @@ export const AttendanceProvider = ({ children }: { children: React.ReactNode }) 
         body: JSON.stringify({ studentName, present, date_attendance }),
       });
 
+      console.log("Resposta do attendance - Status:", response.status);
+      
       const data = await response.json();
+      console.log("Dados da resposta attendance:", data);
 
       if (!response.ok) {
         setError(data?.message || "Erro ao registrar presença");
@@ -177,6 +215,7 @@ export const AttendanceProvider = ({ children }: { children: React.ReactNode }) 
       } else {
         Alert.alert("Sucesso", "Presença registrada com sucesso!");
       }
+
     } catch (err: any) {
       console.error("Erro ao marcar presença:", err);
       setError("Erro de conexão");
